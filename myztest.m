@@ -1,3 +1,7 @@
+% Run mergeCh12 on a list of folders. I'm arbitrarily choosing the folders
+% that begin with 'ds' - this gives a list of 29 folders. The folder names
+% alone are used, so this must be run from the folder directly above.
+
 % get list of folders beginning with 'ds', e.g. ds0345a-001
 fstruct=dir('/home/dan/work/zito/ds0345-c/ds*');
 dirflags = [fstruct.isdir];
