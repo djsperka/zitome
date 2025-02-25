@@ -53,8 +53,8 @@ function [newTifFilename] = mergeCh12(folder,options)
     % are stored in the same file. So here we just find the FIRST occurence
     % of the channel number '1' and take its filename. Same for channel '2'
     % below. 
-    filename{1} = V{find(ismember(V(:,2),{'1'}),1),3};
-    filename{2} = V{find(ismember(V(:,2),{'2'}),1),3};
+    filename{1} = V{find(ismember(V(:,1),{'1'}),1),3};
+    filename{2} = V{find(ismember(V(:,1),{'2'}),1),3};
     
     % How many pages? Find the max 'page' (column 2)
     maxPage = max(cellfun(@(x) str2double(x), V(:,2)));
@@ -65,8 +65,9 @@ function [newTifFilename] = mergeCh12(folder,options)
         fprintf('There are %d pages each Ch1,Ch2. There will be %d in the combined file.\n', maxPage, maxPage*2);
     end
 
-    % Open the two image files, and create/open a new (combined) image
-    % file.
+    % Write ch1 image, then ch2 image. First ch1 image must be written
+    % without append mode - this ensures that previously existing output
+    % file is clobbered! All other images written with append.
     for ipage=1:maxPage
         if ipage==1
             imwrite(imread(fullfile(folder,filename{1}), ipage), newTifFilename);
