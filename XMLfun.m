@@ -2,11 +2,11 @@ function [values,isValid] = XMLfun(S,nodeNameToFind,funcOrAttributeName)
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 
-    arguments
-        S (1,1) struct {mustBeXMLElementStruct}
-        nodeNameToFind {mustBeText}
-        funcOrAttributeName {mustBeFunctionHandleOrAttrName}
-    end
+%     arguments
+%         S (1,1) struct {mustBeXMLElementStruct}
+%         nodeNameToFind {mustBeText}
+%         funcOrAttributeName {mustBeFunctionHandleOrAttrName}
+%     end
 
     function [val] = nodefunc(sNode,toThisPoint,seekingThisNodeName,f)
 
