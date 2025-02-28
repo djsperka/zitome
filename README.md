@@ -1,6 +1,8 @@
 # zitome
 Read and re-shuffle OME-TIF files from 2-channel recordings into a single OME-TIF file with interleaved pages.
 
+The scripts here will run on Matlab 2012, and anything  more recent. 
+
 ## Usage
 
 The script operates on a single folder containing a pair of ome.tif files from the Bruker. I have assumed the
@@ -15,10 +17,14 @@ The simplest case - data in a folder in my home dir:
 
  > newfile = mergeCh12('/home/dan/work/zito/ds0345-c/ds0345a-001');
 
+The simplest case - but more wordy:
+
+ > newfile = mergeCh12('/home/dan/work/zito/ds0345-c/ds0345a-001', 'verbose', 1);
+
 If the data is in a folder with a different name:
  
- > newfile = mergeCh12('/home/dan/work/zito/ds0345-c/modified-data-folder', xmlfilename='ds0345b-005.xml');
+ > newfile = mergeCh12('/home/dan/work/zito/ds0345-c/modified-data-folder', 'xmlfilename', 'ds0345b-005.xml');
 
 Write output file to different folder than input folder:
  
- > newfile = mergeCh12('/home/dan/work/zito/ds0345-c/ds0345a-004', outputfolder='/home/dan/work/zito/ds0345-c/combined');
+ > newfile = mergeCh12('/home/dan/work/zito/ds0345-c/ds0345a-004', 'output', '/home/dan/work/zito/ds0345-c/combined');
