@@ -1,24 +1,37 @@
-function [newTifFilename] = mergeCh12(folder,options)
+function [newTifFilename] = mergeCh12(varargin)
 %MERGECH12 Takes the Ch1 and Ch2 files from a Bruker timepoint, interleaves
 %the channels together in a single ome file. xmlfilename is assumed to be
 %the same as the folder name, but can be passed separately.
 %   Detailed explanation goes here, AND IS DEFINITELY NEEDED. 
 
-    arguments
-        folder {mustBeFolder}
-        options.outputfolder {mustBeFolderOrEmpty} = ''
-        options.xmlfilename {mustBeText} = ''
-        options.verbose {mustBeNumericOrLogical} = 0
-    end
+%     arguments
+%         folder {mustBeFolder}
+%         options.outputfolder {mustBeFolderOrEmpty} = ''
+%         options.xmlfilename {mustBeText} = ''
+%         options.verbose {mustBeNumericOrLogical} = 0
+%     end
 
+    p = inputParser;
+    addRequired(p, 'folder', @ischar);
+    addParamValue(p, 'output', '', @ischar);
+    addParamValue(p, 'xmlfilename', '', @ischar);
+    addParamValue(p, 'verbose', '', @isnumeric);
+    p.parse(varargin{:});
+    folder = p.Results.folder;
+    options.outputfolder=p.Results.output;
+    options.xmlfilename = p.Results.xmlfilename;
+    options.verbose = p.Results.verbose;
+    
+    
+    
     %% Parse inputs
 
-    if strlength(options.outputfolder) ==0
+    if length(options.outputfolder) ==0
         useOutputFolder = folder;
     else
         useOutputFolder = options.outputfolder;
     end
-    if strlength(options.xmlfilename) == 0
+    if length(options.xmlfilename) == 0
         % try to be clever in case the folder came in with a trailing file
         % separator.
         %TODO Test this on windows 'c:\work\cclab\' vs 'c:\work\cclab'
@@ -39,8 +52,9 @@ function [newTifFilename] = mergeCh12(folder,options)
         fprintf('XML filename %s\n', useXmlFilename);
         fprintf('Combined TIF filename %s\n', newTifFilename);
     end
-    if isfile(newTifFilename)
-        warning('Combined TIF file %s already exists. It will be overwritten.', newTifFilename);
+%     if isfile(newTifFilename)
+    if exist(newTifFilename, 'file')==2
+         fprintf('*** Combined TIF file %s already exists. It will be overwritten.\n', newTifFilename);
     end
 
     % Parse xml file, fetch out node PVScan.Sequence.Frame.File. At each
