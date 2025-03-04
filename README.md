@@ -1,5 +1,5 @@
 # zitome
-Read and re-shuffle OME-TIF files from 2-channel recordings into a single OME-TIF file with interleaved pages.
+Read and re-shuffle OME-TIF files from 2-channel recordings into a single OME-TIF file with interleaved pages. A pseudo-header is written to the output file, as required by (some software that reads these images). The format of the pseudo-header is based on format from code Juan used in the past to do this task (using a different format of input file). 
 
 The scripts here will run on Matlab 2012, and anything  more recent. 
 
