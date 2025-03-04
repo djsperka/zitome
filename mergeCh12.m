@@ -72,6 +72,46 @@ function [newTifFilename] = mergeCh12(varargin)
     
     % How many pages? Find the max 'page' (column 2)
     maxPage = max(cellfun(@(x) str2double(x), V(:,2)));
+    
+    %% Add a pseudo header for the image to open in SIA - JF250304
+    [nodeattrs]=XMLfun(S,'PVScan.PVStateShard.PVStateValue', {'key';'value'});
+    attrsToMatch={'linesPerFrame';'pixelsPerLine';'scanLinePeriod';'opticalZoom'};
+    values = cell(4,1);
+    for i=1:length(nodeattrs)
+        m = strcmp(nodeattrs{i}{1},attrsToMatch);
+        if any(m)
+            fprintf('%s %s\n',nodeattrs{i}{1}, nodeattrs{i}{2});
+            values{m} = nodeattrs{i}{2};
+        end
+    end
+    pseudoHeader = sprintf(...
+        ['state.configName=''Bruker''\n' ...
+        'state.acq.numberOfChannelsAcquire=2\n' ...
+        'state.acq.numberOfChannelsSave=2\n' ...
+        'state.acq.linesPerFrame=%s\n' ...
+        'state.acq.pixelsPerLine=%s\n' ...
+        'state.acq.msPerLine=%s\n' ...
+        'state.acq.zoomFactor=%s'], ...
+        values{1}, values{2}, values{3}, values{4});
+
+    % pseudoHeader = sprintf('%s\n%s\n%s\n%s\n%s\n%s\n%s', ...
+    %  imagingConfig, nChans, nSavedChans, nLines, nPixels, lineTime, opticalZoom);
+    % 
+    % 
+    %  imagingConfig = 'state.configName=''Bruker''';
+    %  nChans = 'state.acq.numberOfChannelsAcquire=2'; 
+    %  nSavedChans = 'state.acq.numberOfChannelsSave=2';
+    %  nLines = 'state.acq.linesPerFrame=512';
+    %  nPixels = 'state.acq.pixelsPerLine=512';
+    %  lineTime = 'state.acq.msPerLine=2';
+    %  opticalZoom = 'state.acq.zoomFactor=21';
+    % 
+    %  pseudoHeader = sprintf('%s\n%s\n%s\n%s\n%s\n%s\n%s', ...
+    %  imagingConfig, nChans, nSavedChans, nLines, nPixels, lineTime, opticalZoom);
+    % 
+    %%
+    
+    
 
     if options.verbose
         fprintf('Found channel 1 file %s\n', filename{1});
@@ -84,7 +124,7 @@ function [newTifFilename] = mergeCh12(varargin)
     % file is clobbered! All other images written with append.
     for ipage=1:maxPage
         if ipage==1
-            imwrite(imread(fullfile(folder,filename{1}), ipage), newTifFilename);
+            imwrite(imread(fullfile(folder,filename{1}), ipage), newTifFilename, 'Description', pseudoHeader); % Added the pseudoHeader to the image description JF250304
         else
             imwrite(imread(fullfile(folder,filename{1}), ipage), newTifFilename, 'WriteMode', 'append');
         end            
